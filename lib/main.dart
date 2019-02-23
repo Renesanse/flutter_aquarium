@@ -69,7 +69,7 @@ class MyAppState extends State<MyApp> {
             && fish1.hunter
             && fish1 != fish2
             && fish1.size - fish2.size >= -1
-            && fish1.currentPoint.distanceTo(fish2.currentPoint) < (fish1.size + fish2.size) / 2
+            && fish1.currentPoint.distanceTo(fish2.currentPoint) < (fish1.size + fish2.size) / 4
         ){
           fish2.hide();
           fish2.dead = true;
