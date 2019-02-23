@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'main.dart';
 
 class Fish extends StatefulWidget {
 
   final size;
   final hunter;
   bool dead = false;
-  bool portrait = true;
+  bool rotated;
 
   bool isPunched = false;
   Point startPoint;
@@ -45,25 +46,31 @@ class _FishState extends State<Fish> with TickerProviderStateMixin {
   Animation animation;
   AnimationController controller;
 
+  initState(){
+    super.initState();
+  }
+
   build(context) {
 
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
+    if(controller != null){
+      controller.dispose();
+    }
+
+    if(height == null){
+      height = MediaQuery.of(context).size.height;
+      width = MediaQuery.of(context).size.width;
+    }
 
     if(widget.startPoint == null){
-      final x = Random().nextInt(width.round()).roundToDouble();
-      final y = Random().nextInt(height.round()).roundToDouble();
+      final x = Random().nextInt(width.round() - widget.size).roundToDouble();
+      final y = Random().nextInt(height.round() - widget.size).roundToDouble();
       widget.startPoint = Point(x,y);
     }
-    if(widget.portrait){
-      final x = Random().nextInt(width.round()).roundToDouble();
-      final y = Random().nextInt(height.round()).roundToDouble();
-      widget.endPoint = Point(x, y);
-    }else{
-      final y = Random().nextInt(width.round()).roundToDouble();
-      final x = Random().nextInt(height.round()).roundToDouble();
-      widget.endPoint = Point(x, y);
-    }
+
+    final x = Random().nextInt(width.round() - widget.size).roundToDouble();
+    final y = Random().nextInt(height.round() - widget.size).roundToDouble();
+
+    widget.endPoint = Point(x, y);
 
     final distance = widget.startPoint.distanceTo(widget.endPoint);
 
@@ -77,7 +84,7 @@ class _FishState extends State<Fish> with TickerProviderStateMixin {
         if(status == AnimationStatus.completed) {
           setState(() {
             widget.startPoint = animation.value;
-            });
+          });
         }
       });
 
@@ -86,54 +93,30 @@ class _FishState extends State<Fish> with TickerProviderStateMixin {
 
     return AnimatedBuilder(
         animation: animation,
-        builder: (context,_) {
-          if (widget.dead)
-            return Container();
-          return OrientationBuilder(builder: (context, or){
-            if(or == Orientation.portrait){
-              widget.portrait = true;
-              final currentX = animation.value.x - widget.size / 2;
-              final currentY = animation.value.y - widget.size / 2;
-              widget.currentPoint = Point(currentX, currentY);
-              return Container(
-                margin: EdgeInsets.only(
-                  left: widget.currentPoint.x < 1 ? 0 : widget.currentPoint.x,
-                  top: widget.currentPoint.y < 1 ? 0 : widget.currentPoint.y,
+        builder: (context,_) {final currentX = animation.value.x - widget.size / 2;
+        final currentY = animation.value.y - widget.size / 2;
+        widget.currentPoint = Point(currentX, currentY);
+        if (widget.dead)
+          return Container();
+        return OrientationBuilder(builder: (context, or) {
+          or == Orientation.portrait ?  widget.rotated = false : widget.rotated = true;
+          return Container(
+            margin: EdgeInsets.only(
+              left: widget.rotated ? animation.value.y : animation.value.x,
+              top: widget.rotated ? animation.value.x : animation.value.y,
+            ),
+            child: SizedBox(
+              width: widget.size.roundToDouble(),
+              height: widget.size.roundToDouble(),
+              child: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(image: widget.hunter ? Image.asset('assets/shark.png').image
+                        : Image.asset('assets/fish.png').image,)
                 ),
-                child: SizedBox(
-                  width: widget.size.roundToDouble(),
-                  height: widget.size.roundToDouble(),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(image: widget.hunter ? Image.asset('assets/shark.png').image
-                            : Image.asset('assets/fish.png').image,)
-                    ),
-                  ),
-                ),
-              );
-            }else{
-              widget.portrait = false;
-              final currentX = animation.value.x - widget.size / 2;
-              final currentY = animation.value.y - widget.size / 2;
-              widget.currentPoint = Point(currentY, currentX);
-              return Container(
-                margin: EdgeInsets.only(
-                  left: widget.currentPoint.x < 1 ? 0 : widget.currentPoint.x,
-                  top: widget.currentPoint.y < 1 ? 0 : widget.currentPoint.y,
-                ),
-                child: SizedBox(
-                  width: widget.size.roundToDouble(),
-                  height: widget.size.roundToDouble(),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(image: widget.hunter ? Image.asset('assets/shark.png').image
-                            : Image.asset('assets/fish.png').image,)
-                    ),
-                  ),
-                ),
-              );
-            }
-          });
+              ),
+            ),
+          );
+        });
         });
   }
 }

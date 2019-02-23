@@ -38,8 +38,8 @@ class MyApp extends StatefulWidget{
 class MyAppState extends State<MyApp> {
 
   initState(){
-    _watch();
     super.initState();
+    _watch();
   }
 
   build(context) {
