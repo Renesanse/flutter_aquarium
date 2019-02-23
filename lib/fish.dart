@@ -97,14 +97,14 @@ class _FishState extends State<Fish> with TickerProviderStateMixin {
           if (widget.dead)
             return Container();
           return OrientationBuilder(builder: (context, or) {
-            or == Orientation.portrait ?  widget.rotated = false : widget.rotated = true;
-            final currentX = animation.value.x - widget.size / 2;
-            final currentY = animation.value.y - widget.size / 2;
+            or == Orientation.portrait ? widget.rotated = false : widget.rotated = true;
+            final currentX = animation.value.x - widget.size / 2 < 0.0 ? 0.0 : animation.value.x - widget.size / 2;
+            final currentY = animation.value.y - widget.size / 2 < 0.0 ? 0.0 : animation.value.y - widget.size / 2;
             widget.currentPoint = Point(widget.rotated ? currentY : currentX, widget.rotated ? currentX : currentY);
             return Container(
               margin: EdgeInsets.only(
-              left: widget.rotated ? animation.value.y : animation.value.x,
-              top: widget.rotated ? animation.value.x : animation.value.y,
+              left: widget.rotated ? currentY : currentX,
+              top: widget.rotated ? currentX : currentY,
             ),
             child: SizedBox(
               width: widget.size.roundToDouble(),

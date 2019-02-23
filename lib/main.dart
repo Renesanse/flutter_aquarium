@@ -18,16 +18,16 @@ class MyApp extends StatefulWidget{
   createState() => MyAppState();
 
   final fishes = [
-    Fish(size: 10, hunter: false),
+    Fish(size: 20, hunter: true),
+    Fish(size: 20, hunter: true),
+    Fish(size: 20, hunter: true),
+    Fish(size: 20, hunter: true),
+    Fish(size: 20, hunter: true),
+    Fish(size: 20, hunter: true),
     Fish(size: 20, hunter: true),
     Fish(size: 30, hunter: false),
-    Fish(size: 40, hunter: false),
-    Fish(size: 50, hunter: true),
-    Fish(size: 10, hunter: false),
-    Fish(size: 20, hunter: false),
     Fish(size: 30, hunter: false),
-    Fish(size: 40, hunter: true),
-    Fish(size: 50, hunter: false),
+    Fish(size: 30, hunter: false),
   ];
 
   final source = [];
@@ -39,7 +39,9 @@ class MyAppState extends State<MyApp> {
 
   initState(){
     super.initState();
-    _watch();
+    Future.delayed(Duration(milliseconds: 15), (){
+      _watch();
+    });
   }
 
   build(context) {
@@ -68,8 +70,8 @@ class MyAppState extends State<MyApp> {
             && !fish2.dead
             && fish1.hunter
             && fish1 != fish2
-            && fish1.size - fish2.size >= -1
-            && fish1.currentPoint.distanceTo(fish2.currentPoint) < (fish1.size + fish2.size) / 4
+            && fish1.size - fish2.size >= -10
+            && fish1.currentPoint.distanceTo(fish2.currentPoint) < fish1.size * 0.7
         ){
           fish2.hide();
           fish2.dead = true;
