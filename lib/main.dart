@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'fish.dart';
 
+
+
 void main() => runApp(
   MaterialApp(
     home: Scaffold(
@@ -11,18 +13,18 @@ void main() => runApp(
 
 class MyApp extends StatefulWidget{
 
-  Stream eventWatcher = Stream.periodic(Duration(milliseconds: 100));
+  Stream eventWatcher = Stream.periodic(Duration(milliseconds: 10));
 
   createState() => MyAppState();
 
   final fishes = [
-    Fish(size: 30, hunter: true),
-    Fish(size: 20, hunter: false),
-    Fish(size: 30, hunter: true),
+    Fish(size: 10, hunter: false),
+    Fish(size: 20, hunter: true),
+    Fish(size: 30, hunter: false),
     Fish(size: 40, hunter: false),
     Fish(size: 50, hunter: true),
-    Fish(size: 30, hunter: false),
-    Fish(size: 20, hunter: true),
+    Fish(size: 10, hunter: false),
+    Fish(size: 20, hunter: false),
     Fish(size: 30, hunter: false),
     Fish(size: 40, hunter: true),
     Fish(size: 50, hunter: false),
@@ -35,15 +37,22 @@ class MyApp extends StatefulWidget{
 
 class MyAppState extends State<MyApp> {
 
-  build(context) {
+  initState(){
     _watch();
-    return OrientationBuilder(builder: (context, or){
-      if (or == Orientation.landscape){
-        widget.fishes.forEach((fish){
-          fish.state.setState((){});
-        });
-      }
-    });
+    super.initState();
+  }
+
+  build(context) {
+    return Container(
+      height : MediaQuery.of(context).size.height,
+      width : MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: Colors.indigo,
+      ),
+      child: Stack(
+        children: widget.fishes,
+      ),
+    );
   }
 
   _watch() {
@@ -60,7 +69,7 @@ class MyAppState extends State<MyApp> {
             && fish1.hunter
             && fish1 != fish2
             && fish1.size - fish2.size >= -1
-            && fish1.currentPoint.distanceTo(fish2.currentPoint) < (fish1.size + fish2.size)/4
+            && fish1.currentPoint.distanceTo(fish2.currentPoint) < (fish1.size + fish2.size) / 2
         ){
           fish2.hide();
           fish2.dead = true;
