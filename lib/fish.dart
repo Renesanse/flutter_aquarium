@@ -46,19 +46,18 @@ class _FishState extends State<Fish> with TickerProviderStateMixin {
   Animation animation;
   AnimationController controller;
 
-  initState(){
-    super.initState();
-  }
-
   build(context) {
 
-    if(controller != null){
-      controller.dispose();
-    }
+    if(controller != null) controller.dispose();
 
     if(height == null){
       height = MediaQuery.of(context).size.height;
       width = MediaQuery.of(context).size.width;
+      if(height < width){
+        final buf = height;
+        height = width;
+        width = buf;
+      }
     }
 
     if(widget.startPoint == null){
@@ -98,11 +97,11 @@ class _FishState extends State<Fish> with TickerProviderStateMixin {
             return Container();
           return OrientationBuilder(builder: (context, or) {
             or == Orientation.portrait ? widget.rotated = false : widget.rotated = true;
-            final currentX = animation.value.x - widget.size / 2 < 0.0 ? 0.0 : animation.value.x - widget.size / 2;
-            final currentY = animation.value.y - widget.size / 2 < 0.0 ? 0.0 : animation.value.y - widget.size / 2;
+            final currentX = animation.value.x - widget.size  < 0.0 ? 0.0 : animation.value.x - widget.size ;
+            final currentY = animation.value.y - widget.size  < 0.0 ? 0.0 : animation.value.y - widget.size ;
             widget.currentPoint = Point(widget.rotated ? currentY : currentX, widget.rotated ? currentX : currentY);
             return Container(
-              margin: EdgeInsets.only(
+              padding: EdgeInsets.only(
               left: widget.rotated ? currentY : currentX,
               top: widget.rotated ? currentX : currentY,
             ),
