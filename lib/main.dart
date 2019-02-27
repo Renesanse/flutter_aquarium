@@ -1,80 +1,63 @@
 import 'package:flutter/material.dart';
-import 'fish.dart';
 
+import 'figure.dart';
 
+main() => runApp(MaterialApp(
+      home: Scaffold(
+        body: MyApp(),
+      ),
+    ));
 
-void main() => runApp(
-  MaterialApp(
-    home: Scaffold(
-      body: MyApp(),
-    ),
-  )
-);
-
-class MyApp extends StatefulWidget{
-
-  Stream eventWatcher = Stream.periodic(Duration(milliseconds: 10));
-
+class MyApp extends StatefulWidget {
   createState() => MyAppState();
-
-  final fishes = [
-    Fish(size: 10, hunter: false),
-    Fish(size: 20, hunter: true),
-    Fish(size: 30, hunter: false),
-    Fish(size: 40, hunter: true),
-    Fish(size: 50, hunter: false),
-    Fish(size: 10, hunter: true),
-    Fish(size: 20, hunter: false),
-    Fish(size: 30, hunter: true),
-    Fish(size: 40, hunter: false),
-    Fish(size: 50, hunter: true),
-  ];
-
-  final source = [];
-
 }
 
-
 class MyAppState extends State<MyApp> {
+  Stream eventWatcher = Stream.periodic(Duration(milliseconds: 10));
 
-  initState(){
+  final figures = [
+    Figure(10, false),
+    Figure(20, true),
+    Figure(30, false),
+    Figure(40, true),
+    Figure(50, false),
+    Figure(10, true),
+    Figure(20, false),
+    Figure(30, true),
+    Figure(40, false),
+    Figure(50, true)
+  ];
+
+  initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 15), (){
-      _watch();
-    });
+    _watch();
   }
 
   build(context) {
     return Container(
-      height : MediaQuery.of(context).size.height,
-      width : MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Colors.indigo,
-      ),
-      child: Stack(
-        children: widget.fishes,
-      ),
+      decoration: BoxDecoration(),
+      child: Stack(children: figures),
     );
   }
 
   _watch() {
-    widget.eventWatcher.listen((time) async {
+    eventWatcher.listen((time) async {
       await _checkPositions();
     });
   }
 
   _checkPositions() async {
-    for(Fish fish1 in  widget.fishes){
-      for (Fish fish2 in widget.fishes){
-        if(!fish1.dead
-            && !fish2.dead
-            && fish1.hunter
-            && fish1 != fish2
-            && fish1.size - fish2.size >= -10
-            && fish1.currentPoint.distanceTo(fish2.currentPoint) < fish1.size * 0.25
-        ){
-          fish2.hide();
-          fish2.dead = true;
+    for (Figure figure1 in figures) {
+      for (Figure figure2 in figures) {
+        if (!figure1.dead &&
+            !figure2.dead &&
+            figure1.hunter &&
+            figure1 != figure2 &&
+            figure1.size - figure2.size >= -10 &&
+            figure1.killPoint.distanceTo(figure2.killPoint) <=
+                (figure1.size + figure2.size) / 2) {
+          figure2.hide();
+          figure2.dead = true;
         }
       }
     }
