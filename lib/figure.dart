@@ -60,7 +60,7 @@ class FigureState extends State<Figure> with TickerProviderStateMixin {
 
     final distance = startPoint.distanceTo(endPoint);
 
-    var time = distance / 500;
+    var time = distance / 10;
 
     if (time.round() == 0) time = 1;
 
